@@ -2,16 +2,13 @@
 import json
 
 import scrapy
-from scrapy_redis.spiders import RedisSpider
-
-
 """
 lpush 'redis_spider_key' '{"url":"http://www.baidu.com/"}'
 """
-import redis
-redis_server=redis.Redis()
-from scrapy.http import Request
 
+import redis
+from scrapy.http import Request
+from scrapy_redis.spiders import RedisSpider
 # from scrapy.utils.project import get_project_settings #读取settings属性
 # CONCURRENT_REQUESTS=get_project_settings().get('CONCURRENT_REQUESTS')
 
@@ -21,13 +18,13 @@ class RedisSpiderSpider(RedisSpider):
     allowed_domains = ['www.baidu.com']
     start_urls = []
     redis_key = 'redis_spider_key'
-
+    redis_server = redis.StrictRedis()
     def start_requests(self):
         #从redis队列读取url
         CONCURRENT_REQUESTS=5
         found = 0
         while found < CONCURRENT_REQUESTS:
-            obj = redis_server.rpop(self.redis_key)
+            obj = self.redis_server.rpop(self.redis_key)
             if not isinstance(obj,bytes):continue
             obj=obj.decode()
             print('obj:',obj)
