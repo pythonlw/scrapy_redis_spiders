@@ -37,7 +37,6 @@ class RedisSpiderSpider(RedisSpider):
                 yield req
                 found += 1
                 print('found:',found)
-
         #只运行一次
         # obj1 = {'url': 'http://www.baidu.com'}
         # print('obj1:',obj1)
